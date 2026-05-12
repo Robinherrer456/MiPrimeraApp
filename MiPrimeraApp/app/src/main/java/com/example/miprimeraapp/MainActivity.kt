@@ -1,22 +1,31 @@
-// ... (tus imports actuales)
-import android.widget.EditText // Asegúrate de tener este import
+package com.example.miprimeraapp // Revisa que este nombre sea el que te sugirió el banner
+
+import android.content.Intent
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 1. Buscamos los componentes por el ID que pusiste en el XML
-        val btnIngresar = findViewById<Button>(R.id.btnIngresar)
-        val etEmail = findViewById<EditText>(R.id.etUsername) // Cambia etUsername por el ID de tu XML si es distinto
+        // 1. Definimos las variables
+        val etEmail = findViewById<EditText>(R.id.etUsername)
         val etPass = findViewById<EditText>(R.id.etPassword)
+        val btnIngresar = findViewById<Button>(R.id.btnIngresar)
 
+        // 2. Acción del botón
         btnIngresar.setOnClickListener {
-            // 2. Extraemos el texto de los inputs
-            val emailUsuario = etEmail.text.toString()
+            val email = etEmail.text.toString()
 
-            // 3. Mostramos un mensaje personalizado usando interpolación ($)
-            Toast.makeText(this, "Hola $emailUsuario, ¡bienvenido!", Toast.LENGTH_SHORT).show()
+            // Navegación
+            val intent = Intent(this, HomeActivity::class.java)
+            startActivity(intent)
+
+            Toast.makeText(this, "Bienvenido $email", Toast.LENGTH_SHORT).show()
         }
     }
 }
