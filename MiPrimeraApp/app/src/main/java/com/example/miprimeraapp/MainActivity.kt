@@ -2,81 +2,44 @@ package com.example.miprimeraapp
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.Toast
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.textfield.TextInputLayout
-
-// --- CLASE 5: CONCEPTOS DE POO (MOLDES DE DATOS) ---
-
-// Clase Padre: Aplicamos Abstracción y Herencia (open)
-open class Componente(
-    val marca: String,
-    protected val precioCompra: Double, // Encapsulamiento: Solo hijos lo ven
-    val precioVenta: Double
-) {
-    open fun mostrarEnConsola() {
-        Log.e("POO", "Componente Genérico - Marca: $marca")
-    }
-}
-
-// Clase Hija: Pantalla (Hereda de Componente)
-class Pantalla(val id: Int, val pulgadas: Double, marca: String, pCompra: Double, pVenta: Double)
-    : Componente(marca, pCompra, pVenta) {
-
-    override fun mostrarEnConsola() { // Polimorfismo: Cambiamos el comportamiento
-        Log.e("POO", "PANTALLA: $marca de $pulgadas pulg. (ID: $id)")
-    }
-}
-
-// Clase Hija: Teclado (Hereda de Componente)
-class Teclado(val tipo: String, marca: String, pCompra: Double, pVenta: Double)
-    : Componente(marca, pCompra, pVenta) {
-
-    override fun mostrarEnConsola() {
-        Log.e("POO", "TECLADO: $marca, Tipo: $tipo")
-    }
-}
-
-// --- CLASE PRINCIPAL ---
+import com.example.miprimeraapp.databinding.ActivityMainBinding
+import java.util.Date
 
 class MainActivity : AppCompatActivity() {
+
+    // Configuramos View Binding (Clase 6)
+    private lateinit var binding: ActivityMainBinding
+    private var canShowList: Boolean = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
 
-        // 1. Referencias de la Interfaz
-        val tilEmail = findViewById<TextInputLayout>(R.id.tilEmail)
-        val tilPassword = findViewById<TextInputLayout>(R.id.tilPassword)
-        val btnIngresar = findViewById<Button>(R.id.btnIngresar)
+        // Inflamos la vista con Binding
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // 2. Ejemplo de uso de POO (Clase 5)
-        // Creamos objetos para probar que funcionan
-        val miMonitor = Pantalla(1, 27.0, "LG", 150.0, 200.0)
-        val miTeclado = Teclado("Mecánico", "Redragon", 30.0, 50.0)
+        // Al iniciar, ocultamos la lista y mostramos el mensaje vacío
+        updateVisibility()
 
-        miMonitor.mostrarEnConsola()
-        miTeclado.mostrarEnConsola()
+        // Configuramos el botón de agregar (Floating Action Button)
+        binding.btnIngresar.setOnClickListener {
+            // Simulamos que al presionar el botón "aparecen" notas
+            canShowList = !canShowList
+            updateVisibility()
+        }
+    }
 
-        // 3. Lógica del botón (Navegación Clase 4)
-        btnIngresar.setOnClickListener {
-            val email = tilEmail.editText?.text.toString()
-            val pass = tilPassword.editText?.text.toString()
-
-            if (email.isNotEmpty() && pass.length >= 3) {
-                // Navegar a la pantalla de Home
-                val intent = Intent(this, HomeActivity::class.java)
-                startActivity(intent)
-
-                Toast.makeText(this, "Bienvenido $email", Toast.LENGTH_SHORT).show()
-            } else {
-                // Mostrar errores visuales en los campos
-                if (email.isEmpty()) tilEmail.error = "Ingresa tu correo"
-                if (pass.length < 3) tilPassword.error = "Contraseña muy corta"
-
-                Toast.makeText(this, "Por favor, revisa los datos", Toast.LENGTH_SHORT).show()
-            }
+    private fun updateVisibility() {
+        if (canShowList) {
+            // Mostramos el RecyclerView y ocultamos el mensaje de "Atención"
+            binding.tilEmail.visibility = View.VISIBLE // Aquí iría tu RecyclerView
+            binding.textView.text = "¡Tienes notas nuevas!"
+            // En la clase 6 el profesor oculta el Linear que dice "Atención"
+        } else {
+            // Ocultamos lista y mostramos mensaje vacío
+            binding.textView.text = "No hay notas importantes"
         }
     }
 }
