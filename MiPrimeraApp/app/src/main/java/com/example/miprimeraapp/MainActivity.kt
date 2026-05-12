@@ -6,26 +6,30 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.textfield.TextInputLayout
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // 1. Definimos las variables
-        val etEmail = findViewById<EditText>(R.id.etUsername)
-        val etPass = findViewById<EditText>(R.id.etPassword)
+        // 1. Referencias usando TUS IDs del XML
+        val tilEmail = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.tilEmail)
+        val tilPassword = findViewById<com.google.android.material.textfield.TextInputLayout>(R.id.tilPassword)
         val btnIngresar = findViewById<Button>(R.id.btnIngresar)
 
-        // 2. Acción del botón
+        // 2. Lógica del botón
         btnIngresar.setOnClickListener {
-            val email = etEmail.text.toString()
+            val email = tilEmail.editText?.text.toString()
+            val pass = tilPassword.editText?.text.toString()
 
-            // Navegación
-            val intent = Intent(this, HomeActivity::class.java)
-            startActivity(intent)
-
-            Toast.makeText(this, "Bienvenido $email", Toast.LENGTH_SHORT).show()
+            if (email.isNotEmpty() && pass.length >= 3) {
+                // Ir a la siguiente pantalla
+                val intent = Intent(this, HomeActivity::class.java)
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "Datos incompletos", Toast.LENGTH_SHORT).show()
+            }
         }
     }
-}
+    }
