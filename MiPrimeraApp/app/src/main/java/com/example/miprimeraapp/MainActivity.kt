@@ -3,43 +3,60 @@ package com.example.miprimeraapp
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.miprimeraapp.databinding.ActivityMainBinding
-import java.util.Date
 
 class MainActivity : AppCompatActivity() {
 
-    // Configuramos View Binding (Clase 6)
     private lateinit var binding: ActivityMainBinding
     private var canShowList: Boolean = false
+
+    // 1. Definimos el lanzador para recibir los datos de la Clase 7
+    private val formLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        if (result.resultCode == RESULT_OK) {
+            // Extraemos los datos que enviamos desde FormNoteActivity
+            val title = result.data?.getStringExtra("RESULT_TITLE")
+            val content = result.data?.getStringExtra("RESULT_CONTENT")
+
+            // Mostramos un mensaje con la nota recibida
+            Toast.makeText(this, "Nota Recibida: $title", Toast.LENGTH_LONG).show()
+
+            // Cambiamos el texto de tu pantalla principal
+            binding.textView.text = "Última nota: $title"
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Inflamos la vista con Binding
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Al iniciar, ocultamos la lista y mostramos el mensaje vacío
         updateVisibility()
 
-        // Configuramos el botón de agregar (Floating Action Button)
+        // 2. Configuramos el botón para abrir el formulario de la Clase 7
         binding.btnIngresar.setOnClickListener {
-            // Simulamos que al presionar el botón "aparecen" notas
-            canShowList = !canShowList
-            updateVisibility()
+            // Creamos el Intent para ir a la nueva actividad
+            val intent = Intent(this, FormNoteActivity::class.java)
+
+            // Si quisiéramos enviarle datos previos (ejemplo para editar):
+            // intent.putExtra("EXTRA_TITLE", "Ejemplo")
+
+            // Lanzamos la actividad esperando un resultado
+            formLauncher.launch(intent)
         }
     }
 
     private fun updateVisibility() {
         if (canShowList) {
-            // Mostramos el RecyclerView y ocultamos el mensaje de "Atención"
-            binding.tilEmail.visibility = View.VISIBLE // Aquí iría tu RecyclerView
+            binding.tilEmail.visibility = View.VISIBLE
             binding.textView.text = "¡Tienes notas nuevas!"
-            // En la clase 6 el profesor oculta el Linear que dice "Atención"
         } else {
-            // Ocultamos lista y mostramos mensaje vacío
-            binding.textView.text = "No hay notas importantes"
+            binding.textView.text = "Presiona INGRESAR para crear una nota"
         }
     }
 }
