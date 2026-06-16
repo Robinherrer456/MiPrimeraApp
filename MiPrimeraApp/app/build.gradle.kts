@@ -49,6 +49,10 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.activity.ktx)
+    // Extensiones para Activity y ViewModel (Clase 9)
+    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
 
     // Necesario para el listado de la Clase 6
     implementation("androidx.recyclerview:recyclerview:1.3.2")
