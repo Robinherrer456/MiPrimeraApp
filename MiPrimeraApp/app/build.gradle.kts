@@ -48,11 +48,14 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.activity.ktx)
-    // Extensiones para Activity y ViewModel (Clase 9)
+
+    // Extensiones para Activity y ViewModel (Clase 9 y 10)
     implementation("androidx.activity:activity-ktx:1.8.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.7.0")
+
+    // --- NUEVA LIBRERÍA CLASE 10 (CORRUTINAS) ---
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
     // Necesario para el listado de la Clase 6
     implementation("androidx.recyclerview:recyclerview:1.3.2")
