@@ -1,6 +1,8 @@
 plugins {
-    alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
+        alias(libs.plugins.android.application)
+        alias(libs.plugins.kotlin.android)
+        // CAMBIA LA LÍNEA QUE DIO ERROR POR ESTA:
+        alias(libs.plugins.kotlin.parcelize)
 }
 
 android {

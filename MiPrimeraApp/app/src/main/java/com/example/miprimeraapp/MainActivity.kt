@@ -13,20 +13,28 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var canShowList: Boolean = false
 
-    // 1. Definimos el lanzador para recibir los datos de la Clase 7
+    // 1. Lanzador actualizado para la Clase 8 (Recibe objetos)
     private val formLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
         if (result.resultCode == RESULT_OK) {
-            // Extraemos los datos que enviamos desde FormNoteActivity
-            val title = result.data?.getStringExtra("RESULT_TITLE")
-            val content = result.data?.getStringExtra("RESULT_CONTENT")
 
-            // Mostramos un mensaje con la nota recibida
-            Toast.makeText(this, "Nota Recibida: $title", Toast.LENGTH_LONG).show()
+            // --- CAMBIO CLAVE CLASE 8 ---
+            // Extraemos el objeto completo usando getParcelableExtra
+            val note = result.data?.getParcelableExtra<NoteModel>("EXTRA_NOTE")
 
-            // Cambiamos el texto de tu pantalla principal
-            binding.textView.text = "Última nota: $title"
+            if (note != null) {
+                // Ahora usamos las propiedades del objeto (note.title)
+                Toast.makeText(this, "Nota Guardada: ${note.title}", Toast.LENGTH_LONG).show()
+
+                // Actualizamos la UI con los datos del objeto
+                binding.textView.text = "Última nota: ${note.title}\nContenido: ${note.content}"
+
+                // Simulamos que ahora sí hay contenido para mostrar
+                canShowList = true
+                updateVisibility()
+            }
+            // ----------------------------
         }
     }
 
@@ -38,25 +46,22 @@ class MainActivity : AppCompatActivity() {
 
         updateVisibility()
 
-        // 2. Configuramos el botón para abrir el formulario de la Clase 7
+        // 2. Al hacer clic en INGRESAR, vamos al formulario
         binding.btnIngresar.setOnClickListener {
-            // Creamos el Intent para ir a la nueva actividad
             val intent = Intent(this, FormNoteActivity::class.java)
-
-            // Si quisiéramos enviarle datos previos (ejemplo para editar):
-            // intent.putExtra("EXTRA_TITLE", "Ejemplo")
-
-            // Lanzamos la actividad esperando un resultado
             formLauncher.launch(intent)
         }
     }
 
     private fun updateVisibility() {
         if (canShowList) {
+            // Mostramos los campos si ya recibimos una nota
             binding.tilEmail.visibility = View.VISIBLE
-            binding.textView.text = "¡Tienes notas nuevas!"
+            binding.tilPassword.visibility = View.VISIBLE
         } else {
             binding.textView.text = "Presiona INGRESAR para crear una nota"
+            binding.tilEmail.visibility = View.GONE
+            binding.tilPassword.visibility = View.GONE
         }
     }
 }

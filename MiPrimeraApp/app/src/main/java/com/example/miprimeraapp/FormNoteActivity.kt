@@ -14,7 +14,7 @@ class FormNoteActivity : AppCompatActivity() {
         binding = ActivityFormNoteBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 1. Detectar si es edición o creación
+        // 1. Detectar si es edición o creación (Ahora recibiendo un objeto)
         checkExtras()
 
         // 2. Configurar botones
@@ -22,13 +22,13 @@ class FormNoteActivity : AppCompatActivity() {
     }
 
     private fun checkExtras() {
-        val title = intent.getStringExtra("EXTRA_TITLE")
-        val content = intent.getStringExtra("EXTRA_CONTENT")
+        // En la Clase 8, lo ideal es recibir el objeto completo si es edición
+        val noteToEdit = intent.getParcelableExtra<NoteModel>("EXTRA_NOTE")
 
-        if (title != null && content != null) {
+        if (noteToEdit != null) {
             binding.tvTitlePage.text = "Actualizar Nota"
-            binding.etTitle.setText(title)
-            binding.etContent.setText(content)
+            binding.etTitle.setText(noteToEdit.title)
+            binding.etContent.setText(noteToEdit.content)
             binding.btnSave.text = "Actualizar"
         }
     }
@@ -36,12 +36,22 @@ class FormNoteActivity : AppCompatActivity() {
     private fun setupListeners() {
         binding.btnSave.setOnClickListener {
             if (validateForm()) {
+
+                // --- CAMBIO CLAVE CLASE 8 ---
+                // 1. Creamos el objeto NoteModel con los datos de los campos
+                val noteResult = NoteModel(
+                    title = binding.etTitle.text.toString(),
+                    content = binding.etContent.text.toString()
+                )
+
+                // 2. Lo enviamos de vuelta en el Intent
                 val resultIntent = Intent().apply {
-                    putExtra("RESULT_TITLE", binding.etTitle.text.toString())
-                    putExtra("RESULT_CONTENT", binding.etContent.text.toString())
+                    putExtra("EXTRA_NOTE", noteResult)
                 }
+                // ----------------------------
+
                 setResult(RESULT_OK, resultIntent)
-                finish() // Cierra la pantalla y vuelve a la anterior
+                finish()
             }
         }
 
